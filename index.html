@@ -6,186 +6,90 @@
     <title>متجر فولتشر 🚀</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --primary: #1e293b; --accent: #334155; --bg: #f1f5f9; --white: #ffffff; 
-            --text: #0f172a; --success: #059669; --border: #e2e8f0; 
-            --num-color: #dc2626; --link-dark: #000080; 
-        }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); line-height: 1.6; }
-        .header { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        :root { --primary: #1e293b; --bg: #f1f5f9; --white: #ffffff; --num-color: #dc2626; --link-dark: #000080; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; }
+        .header { background: linear-gradient(135deg, var(--primary), #334155); color: white; padding: 30px; text-align: center; border-radius: 0 0 30px 30px; }
         .container { padding: 20px; max-width: 600px; margin: auto; }
-        #adminPanel { display: none; background: var(--white); padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid var(--border); }
-        .app-grid { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
-        .app-card { background: var(--white); border-radius: 28px; padding: 25px; position: relative; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; }
-        .app-img { width: 100px; height: 100px; border-radius: 22px; object-fit: cover; margin-bottom: 15px; border: 3px solid #fff; box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
-        .app-name { font-weight: 800; font-size: 1.4rem; color: var(--primary); margin-bottom: 15px; display: block; }
-        .info-field { background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; padding: 12px 15px; margin-bottom: 12px; display: flex; flex-direction: column; align-items: flex-start; position: relative; }
-        .field-label { font-size: 0.85rem; color: #475569; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-        .field-value.number-highlight { color: var(--num-color); font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; }
-        .field-value.link-highlight { color: var(--link-dark); font-weight: 700; font-size: 0.95rem; word-break: break-all; text-align: right; padding-left: 45px; }
-        .copy-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; padding: 8px; background: #edf2f7; border-radius: 10px; }
-        .app-desc-box { background: #f1f5f9; color: #334155; padding: 12px; border-radius: 14px; font-size: 0.9rem; margin-top: 5px; text-align: right; border-right: 4px solid var(--primary); width: 100%; box-sizing: border-box; }
-        .btn-action { background: var(--primary); color: white; padding: 16px; border-radius: 18px; text-decoration: none; font-weight: 800; display: block; margin-top: 10px; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-action:hover { background: #0f172a; transform: translateY(-2px); }
-        .admin-btns { position: absolute; top: 15px; left: 15px; display: none; gap: 8px; }
-        .admin-btn { width: 35px; height: 35px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .del-btn { background: #fff1f2; color: #ef4444; }
-        .edit-btn { background: #fef3c7; color: #d97706; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-top: 5px; box-sizing: border-box; font-family: inherit; }
-        .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        #adminPanel { display: none; background: var(--white); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .app-card { background: var(--white); border-radius: 25px; padding: 20px; position: relative; margin-bottom: 20px; text-align: center; border: 1px solid #e2e8f0; }
+        .app-img { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; }
+        .info-field { background: #f8fafc; border-radius: 12px; padding: 10px; margin-top: 10px; position: relative; text-align: right; }
+        .number-highlight { color: var(--num-color); font-weight: 900; font-size: 1.2rem; }
+        .link-highlight { color: var(--link-dark); font-weight: 700; word-break: break-all; }
+        .btn-action { background: var(--primary); color: white; padding: 15px; border-radius: 15px; text-decoration: none; display: block; margin-top: 10px; font-weight: bold; border: none; width: 100%; cursor: pointer; }
+        .admin-btns { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .loading { position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
     </style>
 </head>
 <body>
-
-<div id="loading" class="loading-overlay"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary)"></i><p>جاري تحديث السحابة المستقلة...</p></div>
-
-<div class="header">
-    <h1>متجر فولتشر 🚀</h1>
-    <p>بوابتك للتطبيقات (نسخة Firestore الآمنة)</p>
-</div>
-
+<div id="loading" class="loading">جاري الحفظ في السحابة...</div>
+<div class="header"><h1>متجر فولتشر 🚀</h1></div>
 <div class="container">
     <div id="adminPanel">
-        <h3 id="panelTitle">إدارة المتجر</h3>
+        <h3>إضافة تطبيق جديد</h3>
         <input type="hidden" id="editDocId">
-        <div style="margin-bottom:10px;">
-            <label style="font-weight:bold; font-size:0.8rem;">صورة التطبيق:</label>
-            <input type="file" id="appImg" accept="image/*" onchange="previewImage(this)">
-        </div>
+        <input type="file" id="appImg" accept="image/*" onchange="const r=new FileReader(); r.onload=e=>window.imgB64=e.target.result; r.readAsDataURL(this.files[0])">
         <input type="text" id="appName" placeholder="اسم التطبيق">
         <input type="text" id="appCode" placeholder="كود Downloader">
-        <input type="text" id="appLink" placeholder="رابط التحميل المباشر">
-        <textarea id="appDesc" rows="2" placeholder="وصف التطبيق ومميزاته"></textarea>
-        <button id="saveBtn" class="btn-action" onclick="saveApp()" style="width:100%; background:var(--success);">حفظ في Firestore</button>
-        <button id="cancelBtn" onclick="resetForm()" style="width:100%; margin-top:10px; display:none; border:none; background:#eee; padding:10px; border-radius:12px; cursor:pointer;">إلغاء</button>
+        <input type="text" id="appLink" placeholder="رابط التحميل">
+        <textarea id="appDesc" placeholder="وصف التطبيق"></textarea>
+        <button class="btn-action" onclick="saveApp()" style="background:#059669">حفظ في السحابة</button>
     </div>
-    <div id="appGrid" class="app-grid"></div>
+    <div id="appGrid"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- ضع بيانات Firebase الخاصة بك هنا ---
-    const firebaseConfig = {
-        apiKey: "ضع_هنا_API_KEY",
-        authDomain: "vulture-app-1efba.firebaseapp.com",
-        projectId: "vulture-app-1efba",
-        storageBucket: "vulture-app-1efba.appspot.com",
-        messagingSenderId: "ضع_هنا_الرقم",
-        appId: "ضع_هنا_APP_ID"
-    };
-
+    const firebaseConfig = { projectId: "vulture-app-1efba" }; // السحابة الخاصة بك
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const appsCollection = collection(db, "apps");
+    const colRef = collection(db, "apps");
 
-    let selectedImageBase64 = "";
-
-    window.previewImage = (input) => {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => { selectedImageBase64 = e.target.result; };
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
-    onSnapshot(appsCollection, (snapshot) => {
-        const grid = document.getElementById('appGrid');
-        grid.innerHTML = "";
-        snapshot.forEach((document) => {
-            const appData = document.data();
-            const id = document.id;
-            const isNumeric = /^\d+$/.test(appData.code);
-
-            grid.innerHTML += `
-                <div class="app-card">
-                    <div class="admin-btns" style="${new URLSearchParams(window.location.search).get('admin') === '123' ? 'display:flex' : 'display:none'}">
-                        <button class="admin-btn edit-btn" onclick="editApp('${id}', ${JSON.stringify(appData).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
-                        <button class="admin-btn del-btn" onclick="deleteApp('${id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <img src="${appData.img}" class="app-img">
-                    <span class="app-name">${appData.name}</span>
-                    <div class="info-field">
-                        <span class="field-label"><i class="fas fa-key"></i> كود Downloader</span>
-                        <span class="field-value ${isNumeric ? 'number-highlight' : ''}" id="c-${id}">${appData.code}</span>
-                        <i class="far fa-copy copy-icon" onclick="copyText('c-${id}')"></i>
-                    </div>
-                    <div class="info-field">
-                        <span class="field-label"><i class="fas fa-link"></i> الرابط المباشر</span>
-                        <span class="field-value link-highlight" id="l-${id}">${appData.link}</span>
-                        <i class="far fa-copy copy-icon" onclick="copyText('l-${id}')"></i>
-                    </div>
-                    <div class="app-desc-box">${appData.desc || 'تطبيق حصري'}</div>
-                    <a href="${appData.link}" target="_blank" class="btn-action">تحميل الآن <i class="fas fa-download"></i></a>
-                </div>`;
+    onSnapshot(colRef, (s) => {
+        const grid = document.getElementById('appGrid'); grid.innerHTML = "";
+        s.forEach((d) => {
+            const item = d.data(); const id = d.id;
+            grid.innerHTML += `<div class="app-card">
+                <div class="admin-btns" style="${new URLSearchParams(location.search).get('admin')==='123'?'display:flex':'none'}">
+                    <button onclick="editApp('${id}',${JSON.stringify(item).replace(/"/g,'&quot;')})">📝</button>
+                    <button onclick="deleteApp('${id}')">🗑️</button>
+                </div>
+                <img src="${item.img}" class="app-img">
+                <h3>${item.name}</h3>
+                <div class="info-field">كود: <span class="number-highlight">${item.code}</span></div>
+                <div class="info-field"><span class="link-highlight">${item.link}</span></div>
+                <button class="btn-action" onclick="window.open('${item.link}')">تحميل الآن</button>
+            </div>`;
         });
-        if (new URLSearchParams(window.location.search).get('admin') === '123') {
-            document.getElementById('adminPanel').style.display = 'block';
-        }
+        if(new URLSearchParams(location.search).get('admin')==='123') document.getElementById('adminPanel').style.display='block';
     });
 
-    window.saveApp = async function() {
-        const name = document.getElementById('appName').value;
-        const link = document.getElementById('appLink').value;
-        const code = document.getElementById('appCode').value;
-        const desc = document.getElementById('appDesc').value;
-        const docId = document.getElementById('editDocId').value;
-        
-        if (!name || !link || !code) return alert("أكمل البيانات!");
-        showLoading(true);
-
-        const data = { name, link, code, desc };
-        if (selectedImageBase64) data.img = selectedImageBase64;
-
-        try {
-            if (!docId) {
-                if (!selectedImageBase64) { showLoading(false); return alert("اختر صورة!"); }
-                await addDoc(appsCollection, data);
-            } else {
-                await updateDoc(doc(db, "apps", docId), data);
-            }
-            resetForm();
-            showLoading(false);
-        } catch (e) { alert("حدث خطأ"); showLoading(false); }
+    window.saveApp = async () => {
+        const id = document.getElementById('editDocId').value;
+        const data = { 
+            name: document.getElementById('appName').value,
+            code: document.getElementById('appCode').value,
+            link: document.getElementById('appLink').value,
+            desc: document.getElementById('appDesc').value
+        };
+        if(window.imgB64) data.img = window.imgB64;
+        document.getElementById('loading').style.display='flex';
+        id ? await updateDoc(doc(db,"apps",id), data) : await addDoc(colRef, data);
+        location.reload();
     };
 
     window.editApp = (id, data) => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
         document.getElementById('editDocId').value = id;
         document.getElementById('appName').value = data.name;
         document.getElementById('appCode').value = data.code;
         document.getElementById('appLink').value = data.link;
         document.getElementById('appDesc').value = data.desc;
-        document.getElementById('saveBtn').innerText = "تحديث الآن";
-        document.getElementById('cancelBtn').style.display = "block";
     };
 
-    window.deleteApp = async (id) => {
-        if(confirm("حذف؟")) {
-            showLoading(true);
-            await deleteDoc(doc(db, "apps", id));
-            showLoading(false);
-        }
-    };
-
-    window.resetForm = () => {
-        document.getElementById('editDocId').value = "";
-        document.getElementById('appName').value = "";
-        document.getElementById('appCode').value = "";
-        document.getElementById('appLink').value = "";
-        document.getElementById('appDesc').value = "";
-        document.getElementById('saveBtn').innerText = "حفظ في Firestore";
-        document.getElementById('cancelBtn').style.display = "none";
-        selectedImageBase64 = "";
-    };
-
-    window.copyText = (id) => {
-        navigator.clipboard.writeText(document.getElementById(id).innerText);
-        alert("تم النسخ ✅");
-    };
-
-    function showLoading(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
+    window.deleteApp = async (id) => { if(confirm('حذف؟')) await deleteDoc(doc(db,"apps",id)); };
 </script>
 </body>
 </html>
