@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر فولتشر 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #1e293b; --accent: #334155; --bg: #f1f5f9; --white: #ffffff; 
+            --text: #0f172a; --success: #059669; --border: #e2e8f0; 
+            --num-color: #dc2626; --link-dark: #000080; 
+        }
+        
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); line-height: 1.6; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        
+        #adminPanel { display: none; background: var(--white); padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid var(--border); }
+        .app-grid { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
+        
+        .app-card { 
+            background: var(--white); border-radius: 28px; padding: 25px; position: relative; 
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center;
+        }
+
+        .app-img { width: 100px; height: 100px; border-radius: 22px; object-fit: cover; margin-bottom: 15px; box-shadow: 0 8px 15px rgba(0,0,0,0.08); border: 3px solid #fff; }
+        .app-name { font-weight: 800; font-size: 1.4rem; color: var(--primary); margin: 0 0 15px 0; display: block; }
+        
+        .info-field { 
+            background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; 
+            padding: 12px 15px; margin-bottom: 12px; display: flex; flex-direction: column; 
+            align-items: flex-start; position: relative;
+        }
+        .field-label { font-size: 0.85rem; color: #475569; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+        
+        /* الأرقام باللون الأحمر السميك */
+        .field-value.number-highlight { color: var(--num-color); font-size: 1.2rem; font-weight: 900; letter-spacing: 1px; }
+        
+        /* الرابط كحلي داكن جداً وواضح */
+        .field-value.link-highlight { color: var(--link-dark); font-weight: 700; font-size: 0.95rem; word-break: break-all; text-align: right; padding-left: 45px; }
+        
+        .copy-icon { 
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%); 
+            color: var(--primary); cursor: pointer; padding: 8px; background: #edf2f7; border-radius: 10px;
+        }
+
+        .app-desc-box { background: #f1f5f9; color: #334155; padding: 12px; border-radius: 14px; font-size: 0.9rem; margin-top: 5px; text-align: right; width: 100%; box-sizing: border-box; border-right: 4px solid var(--primary); }
+        
+        .btn-action { 
+            background: var(--primary); color: white; padding: 16px; border-radius: 18px; 
+            text-decoration: none; font-weight: 800; display: block; margin-top: 10px; border: none; cursor: pointer; transition: 0.3s;
+        }
+
+        .admin-btns { position: absolute; top: 15px; left: 15px; display: none; gap: 8px; }
+        .admin-btn { width: 35px; height: 35px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .del-btn { background: #fff1f2; color: #ef4444; }
+        .edit-btn { background: #fef3c7; color: #d97706; }
+
+        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-top: 5px; box-sizing: border-box; }
+        .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+    </style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary)"></i><p>جاري مزامنة السحابة الجديدة...</p></div>
+
+<div class="header">
+    <h1>متجر فولتشر 🚀</h1>
+    <p>بوابتك للتطبيقات المختارة</p>
+</div>
+
+<div class="container">
+    <div id="adminPanel">
+        <h3 id="panelTitle">إدارة المتجر الجديد</h3>
+        <input type="hidden" id="editIndex" value="-1">
+        <input type="file" id="appImg" accept="image/*" onchange="previewImage(this)">
+        <input type="text" id="appName" placeholder="اسم التطبيق">
+        <input type="text" id="appCode" placeholder="كود Downloader">
+        <input type="text" id="appLink" placeholder="رابط التحميل المباشر">
+        <textarea id="appDesc" rows="2" placeholder="وصف التطبيق"></textarea>
+        <button id="saveBtn" class="btn-action" onclick="saveApp()" style="width:100%; background:var(--success);">حفظ في السحابة الجديدة</button>
+        <button id="cancelBtn" onclick="resetForm()" style="width:100%; margin-top:10px; display:none; border:none; background:#eee; padding:10px; border-radius:12px; cursor:pointer;">إلغاء</button>
+    </div>
+
+    <div id="appGrid" class="app-grid"></div>
+</div>
+
+<script>
+    // ضع هنا رابط السحابة الجديدة (Firebase الجديد)
+    const DB_URL = "https://vulture-store-new-default-rtdb.firebaseio.com/data.json"; 
+    
+    const params = new URLSearchParams(window.location.search);
+    let fullData = { apps: [] };
+    let selectedImageBase64 = "";
+
+    async function loadApps() {
+        showLoading(true);
+        try {
+            const response = await fetch(DB_URL);
+            const data = await response.json();
+            fullData.apps = (data && data.apps) ? data.apps : [];
+            renderApps();
+            if (params.get('admin') === '123') {
+                document.getElementById('adminPanel').style.display = 'block';
+                document.querySelectorAll('.admin-btns').forEach(b => b.style.display = 'flex');
+            }
+        } catch (e) { console.error("Data connection error"); }
+        showLoading(false);
+    }
+
+    function renderApps() {
+        const grid = document.getElementById('appGrid');
+        grid.innerHTML = (fullData.apps || []).map((app, i) => `
+            <div class="app-card">
+                <div class="admin-btns">
+                    <button class="admin-btn edit-btn" onclick="editApp(${i})"><i class="fas fa-edit"></i></button>
+                    <button class="admin-btn del-btn" onclick="deleteApp(${i})"><i class="fas fa-trash"></i></button>
+                </div>
+                <img src="${app.img}" class="app-img">
+                <span class="app-name">${app.name}</span>
+                
+                <div class="info-field">
+                    <span class="field-label"><i class="fas fa-key"></i> كود Downloader</span>
+                    <span class="field-value number-highlight" id="c-${i}">${app.code}</span>
+                    <i class="far fa-copy copy-icon" onclick="copyText('c-${i}')"></i>
+                </div>
+
+                <div class="info-field">
+                    <span class="field-label"><i class="fas fa-link"></i> رابط التحميل المباشر</span>
+                    <span class="field-value link-highlight" id="l-${i}">${app.link}</span>
+                    <i class="far fa-copy copy-icon" onclick="copyText('l-${i}')"></i>
+                </div>
+
+                <div class="app-desc-box">${app.desc || 'تطبيق مميز'}</div>
+
+                <a href="${app.link}" target="_blank" class="btn-action">تحميل الآن <i class="fas fa-download"></i></a>
+            </div>
+        `).join('');
+    }
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => { selectedImageBase64 = e.target.result; };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    async function saveApp() {
+        const name = document.getElementById('appName').value;
+        const link = document.getElementById('appLink').value;
+        const index = parseInt(document.getElementById('editIndex').value);
+        if (!name || !link) return alert("أكمل البيانات!");
+        
+        showLoading(true);
+        const appData = { 
+            name, link, 
+            code: document.getElementById('appCode').value, 
+            desc: document.getElementById('appDesc').value, 
+            img: selectedImageBase64 || (index !== -1 ? fullData.apps[index].img : "")
+        };
+        if (!appData.img) { showLoading(false); return alert("اختر صورة!"); }
+
+        if (index === -1) fullData.apps.push(appData);
+        else fullData.apps[index] = appData;
+
+        await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(fullData) });
+        location.reload();
+    }
+
+    function editApp(i) {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        document.getElementById('editIndex').value = i;
+        document.getElementById('appName').value = fullData.apps[i].name;
+        document.getElementById('appCode').value = fullData.apps[i].code;
+        document.getElementById('appLink').value = fullData.apps[i].link;
+        document.getElementById('appDesc').value = fullData.apps[i].desc;
+        document.getElementById('saveBtn').innerText = "تحديث البيانات";
+        document.getElementById('cancelBtn').style.display = "block";
+        selectedImageBase64 = fullData.apps[i].img;
+    }
+
+    function resetForm() {
+        document.getElementById('editIndex').value = "-1";
+        document.getElementById('appName').value = "";
+        document.getElementById('appCode').value = "";
+        document.getElementById('appLink').value = "";
+        document.getElementById('appDesc').value = "";
+        document.getElementById('saveBtn').innerText = "حفظ في السحابة الجديدة";
+        document.getElementById('cancelBtn').style.display = "none";
+        selectedImageBase64 = "";
+    }
+
+    async function deleteApp(i) {
+        if(confirm("حذف؟")) { 
+            showLoading(true); 
+            fullData.apps.splice(i, 1); 
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(fullData) }); 
+            location.reload(); 
+        }
+    }
+
+    function copyText(id) {
+        navigator.clipboard.writeText(document.getElementById(id).innerText);
+        alert("تم النسخ ✅");
+    }
+
+    function showLoading(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
+    loadApps();
+</script>
+</body>
+</html>
